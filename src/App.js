@@ -24,6 +24,7 @@ function App() {
       .then((data) => {
         console.log(data);
         setSuccess("Deleted successfully");
+        setShowData((prevData) => prevData.filter((job) => job._id !== jobId));
       })
       .catch((error) => setSuccess(`error occured ${error}`));
     window.location.reload();
