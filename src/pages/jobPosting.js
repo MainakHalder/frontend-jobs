@@ -5,42 +5,51 @@ const JobPosting = () => {
   const [name, setName] = useState("");
   const [location, setLocation] = useState("");
   const [salary, setSalary] = useState(0);
-  const [type, setType] = useState("");
+  const [jobType, setType] = useState("");
   const [desc, setDesc] = useState("");
   const [qualification, setQualification] = useState([]);
   const [success, setSuccess] = useState("");
   const handleSubmit = (event) => {
-    console.log(type);
     event.preventDefault();
-    const postData = {
-      name: name,
-      role: title,
-      location: location,
-      salary: salary,
-      jobType: type,
-      jobDescription: desc,
-      qualification: qualification.split("."),
-    };
-    console.log(postData);
-    fetch("https://backend-jobs-chi.vercel.app/job", {
-      method: "POST",
-      headers: {
-        "Content-Type": "Application/JSON",
-      },
-      body: JSON.stringify(postData),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data) {
-          console.log(data);
-          setSuccess("Data uploaded successfully.");
-        } else {
-          setSuccess("Failed to add data");
-        }
+    if (
+      title &&
+      name &&
+      location &&
+      salary &&
+      jobType &&
+      desc &&
+      qualification.length
+    ) {
+      const postData = {
+        name: name,
+        role: title,
+        location: location,
+        salary: salary,
+        jobType: jobType,
+        jobDescription: desc,
+        qualification: qualification.split("\n"),
+      };
+      console.log(postData);
+      fetch("https://backend-jobs-chi.vercel.app/job", {
+        method: "POST",
+        headers: {
+          "Content-Type": "Application/JSON",
+        },
+        body: JSON.stringify(postData),
       })
-      .catch((error) => {
-        setSuccess(`Error: ${error}`);
-      });
+        .then((response) => response.json())
+        .then((data) => {
+          if (data) {
+            console.log(data);
+            setSuccess("Data uploaded successfully.");
+          } else {
+            setSuccess("Failed to add data");
+          }
+        })
+        .catch((error) => {
+          setSuccess(`Error: ${error}`);
+        });
+    }
   };
   return (
     <>
@@ -108,7 +117,7 @@ const JobPosting = () => {
             <textarea
               className="form-control"
               onChange={(event) => setQualification(event.target.value)}
-              placeholder="Please write your criteria in sentence with full stop"
+              placeholder="Please write your criteria line by line"
               required
             ></textarea>
           </section>

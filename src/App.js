@@ -7,11 +7,15 @@ import { useState, useEffect } from "react";
 
 function App() {
   const [success, setSuccess] = useState("");
-  const [showData, setShowData] = useState("");
+  const [showData, setShowData] = useState([]);
   const { data, loading, error } = useFetch(
     `https://backend-jobs-chi.vercel.app/job`
   );
-  console.log(data);
+  useEffect(() => {
+    if (data?.length) {
+      setShowData(data);
+    }
+  }, [data]);
   const deleteHandler = (jobId) => {
     fetch(`https://backend-jobs-chi.vercel.app/job/${jobId}`, {
       method: "DELETE",
@@ -22,24 +26,20 @@ function App() {
         setSuccess("Deleted successfully");
       })
       .catch((error) => setSuccess(`error occured ${error}`));
+    window.location.reload();
   };
   const changeHandler = (val) => {
-    // console.log(val);
-    // if (!val) {
-    //   setShowData(data);
-    // } else {
-    //   setShowData(
-    //     data?.filter(({ role }) =>
-    //       role.toLowerCase().includes(val.toLowerCase())
-    //     )
-    //   );
-    // }
-  };
-  useEffect(() => {
-    if (data?.length) {
+    console.log(val);
+    if (!val) {
       setShowData(data);
+    } else {
+      setShowData(
+        data?.filter(({ role }) =>
+          role.toLowerCase().includes(val.toLowerCase())
+        )
+      );
     }
-  }, [data]);
+  };
   return (
     <div className="App">
       <Header />
@@ -62,7 +62,7 @@ function App() {
         {error && <p>Error occured while fetching userData: {error}</p>}
         {data ? (
           <div className="row my-3">
-            {data?.map((job) => (
+            {showData?.map((job) => (
               <div className="col-md-4 my-3">
                 <div className="card">
                   <div className="card-body">
